@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { SlHeart, SlBag, SlMagnifier, SlUser } from 'react-icons/sl';
-import { FaBars, FaTimes } from 'react-icons/fa'; // For hamburger and close icons
+import { FaBars, FaTimes } from 'react-icons/fa'; 
 import DialogSearch from '../pages/DialogSearch';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const wishlistCount = 2;
   const cartCount = 5;
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu toggle
+  const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Header = () => {
   };
   const [openSearch, setOpenSearch] = useState(false);
   return (
-    
+
     <>
       <header className="flex justify-between items-center px-4 py-4 bg-white shadow-md md:px-8 lg:px-16">
         {/* Logo */}
