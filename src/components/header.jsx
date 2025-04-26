@@ -32,7 +32,7 @@ const Header = () => {
         data-aos-delay="400"
         className="text-xl font-bold tracking-wide text-gray-800 md:text-2xl cursor-pointer"
       >
-        PEANUT
+        <a href="/">PEANUT</a>
       </div>
 
       {/* Hamburger Menu (Visible on Mobile) */}
@@ -50,26 +50,29 @@ const Header = () => {
           isMenuOpen ? 'flex' : 'hidden'
         } md:flex flex-col md:flex-row absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none p-4 md:p-0 gap-4 md:gap-6 text-gray-700 font-medium text-sm z-10 `}
       >
-        <ul className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
-          {[
-            'New in',
-            'Sản phẩm',
-            'Lookbook',
-            'Blog',
-            'Liên hệ',
-            'Cửa hàng',
-          ].map((item, index) => (
-            <li
-              key={item}
-              data-aos="fade-left"
-              data-aos-delay={100 * index}
-              className="group relative cursor-pointer transition-colors uppercase hover:text-black"
-            >
-              {item}
-              <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full"></span>
-            </li>
-          ))}
-        </ul>
+<ul className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
+  {[
+    { name: 'New in', link: '/' },
+    { name: 'Sản phẩm', link: '/product' },
+    { name: 'Lookbook', link: '/' },
+    { name: 'Blog', link: '/blog' },
+    { name: 'Liên hệ', link: '/contact' },
+    { name: 'Cửa hàng', link: '/' },
+  ].map((item, index) => (
+    <li
+      key={item.name}
+      data-aos="fade-left"
+      data-aos-delay={100 * index}
+      className="group relative cursor-pointer transition-colors uppercase hover:text-black"
+    >
+      <a href={item.link} className="w-full block">
+        {item.name}
+        <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full"></span>
+      </a>
+    </li>
+  ))}
+</ul>
+
       </nav>
 
       {/* Icons */}
@@ -102,7 +105,7 @@ const Header = () => {
           data-aos-delay="200"
           className="hover:text-black cursor-pointer transition-colors"
         >
-          <SlUser onClick={() => navigate('/login')} />
+          <SlUser onClick={() => navigate('/auth')} />
         </div>
         <div
           data-aos="fade-up"
