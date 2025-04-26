@@ -3,12 +3,15 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { SlHeart, SlBag, SlMagnifier, SlUser } from 'react-icons/sl';
 import { FaBars, FaTimes } from 'react-icons/fa'; // For hamburger and close icons
+import DialogSearch from '../pages/DialogSearch';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const wishlistCount = 2;
   const cartCount = 5;
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu toggle
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     AOS.init({
       duration: 1200,
@@ -19,14 +22,15 @@ const Header = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
+  const [openSearch, setOpenSearch] = useState(false);
   return (
+    <>
     <header className="flex justify-between items-center px-4 py-4 bg-white shadow-md md:px-8 lg:px-16">
       {/* Logo */}
       <div
         data-aos="flip-left"
-        data-aos-delay="200"
-        className="text-xl font-bold tracking-wide text-gray-800 md:text-2xl"
+        data-aos-delay="400"
+        className="text-xl font-bold tracking-wide text-gray-800 md:text-2xl cursor-pointer"
       >
         PEANUT
       </div>
@@ -98,17 +102,19 @@ const Header = () => {
           data-aos-delay="200"
           className="hover:text-black cursor-pointer transition-colors"
         >
-          <SlUser />
+          <SlUser onClick={() => navigate('/login')} />
         </div>
         <div
           data-aos="fade-up"
           data-aos-delay="300"
           className="hover:text-black cursor-pointer transition-colors"
         >
-          <SlMagnifier />
+          <SlMagnifier onClick={() => setOpenSearch(true)} />
         </div>
       </div>
     </header>
+     <DialogSearch isOpen={openSearch} onClose={() => setOpenSearch(false)} />
+    </>
   );
 };
 

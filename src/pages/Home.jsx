@@ -28,7 +28,7 @@ const posts = [
 const Home = () => {
     const images = [slider1, slider2, slider3];
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(3600); // 1 giờ giảm giá
+    const [timeLeft, setTimeLeft] = useState(3600);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -76,7 +76,7 @@ const Home = () => {
             >
               Khám phá những xu hướng thời trang hàng đầu năm nay
             </p>
-            <div data-aos="fade-up" data-aos-delay="700">
+            <div data-aos="fade-up" data-aos-delay="800">
               <button
                 className="px-4 py-2 sm:px-6 sm:py-2 bg-white text-black font-semibold rounded-full hover:bg-gray-200 hover:scale-105 transition-transform duration-300 text-sm sm:text-base"
               >
