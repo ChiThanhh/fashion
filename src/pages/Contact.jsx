@@ -1,5 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { postContact } from '../service/contactService';
+import toast from 'react-hot-toast';
+import validator from "validator";
+
 const Contact = () => {
+    const [contact, setContact] = useState({
+        name: "",
+        email: "",
+        message: ""
+    });
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        setContact({ ...contact, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        if (!validate()) {
+            toast.error("Vui lòng kiểm tra lại thông tin!");
+            return;
+        }
+    
+        const loadingToast = toast.loading("Đang gửi liên hệ...");
+        try {
+            await postContact(contact);
+            toast.dismiss(loadingToast);
+            toast.success("Gửi liên hệ thành công!");
+            setContact({ name: "", email: "", message: "" });
+            setErrors({});
+        } catch (error) {
+            toast.dismiss(loadingToast);
+            toast.error("Gửi liên hệ thất bại. Vui lòng thử lại!");
+        }
+    };
+    
+
+    const validate = () => {
+        const newErrors = {};
+    
+        if (validator.isEmpty(contact.name || "")) {
+            newErrors.name = "Vui lòng nhập họ tên";
+        }
+    
+        if (!validator.isEmail(contact.email || "")) {
+            newErrors.email = "Email không hợp lệ";
+        }
+    
+        if (validator.isEmpty(contact.message || "")) {
+            newErrors.message = "Vui lòng nhập tin nhắn";
+        }
+    
+    
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     return (
         <div className="bg-white text-gray-800 min-h-screen ">
             <div className="relative bg-black text-white  mb-8">
@@ -22,23 +79,26 @@ const Contact = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     {/* Form liên hệ */}
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label data-aos="fade-left" data-aos-delay="100" className="block text-sm font-medium text-gray-700">Họ và tên</label>
+                            <label data-aos="fade-left" data-aos-delay="100" className={`block text-sm font-medium ${errors.name ? 'text-red-600' : 'text-gray-700'}`}>Họ và tên</label>
                             <div data-aos="fade-left" data-aos-delay="200">
-                                <input type="text" className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-black transition-all duration-300" placeholder="Nhập họ tên..." />
+                                <input type="text" className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-black transition-all duration-300`} placeholder="Nhập họ tên..." name="name" value={contact.name} onChange={handleChange} />
+                                {errors.name && <p className="text-red-600 text-xs">{errors.name}</p>}
                             </div>
                         </div>
                         <div>
-                            <label data-aos="fade-left" data-aos-delay="300" className="block text-sm font-medium text-gray-700">Email</label>
+                            <label data-aos="fade-left" data-aos-delay="300" className={`block text-sm font-medium ${errors.email ? 'text-red-600' : 'text-gray-700'}`}>Email</label>
                             <div data-aos="fade-left" data-aos-delay="400">
-                                <input type="email" className="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-black transition-all duration-300" placeholder="Nhập email..." />
+                                <input type="email" className={`mt-1 block w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-black transition-all duration-300`} placeholder="Nhập email..." name="email" value={contact.email} onChange={handleChange} />
+                                {errors.email && <p className="text-red-600 text-xs">{errors.email}</p>}
                             </div>
                         </div>
                         <div>
-                            <label data-aos="fade-left" data-aos-delay="500" className="block text-sm font-medium text-gray-700">Tin nhắn</label>
+                            <label data-aos="fade-left" data-aos-delay="500" className={`block text-sm font-medium ${errors.message ? 'text-red-600' : 'text-gray-700'}`}>Tin nhắn</label>
                             <div data-aos="fade-left" data-aos-delay="600">
-                                <textarea className="mt-1 block w-full border border-gray-300 rounded-lg p-3 h-32 focus:outline-none focus:ring-1 focus:ring-black transition-all duration-300" placeholder="Nhập nội dung..."></textarea>
+                                <textarea className={`mt-1 block w-full border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded-lg p-3 h-32 focus:outline-none focus:ring-1 focus:ring-black transition-all duration-300`} placeholder="Nhập nội dung..." name="message" value={contact.message} onChange={handleChange}></textarea>
+                                {errors.message && <p className="text-red-600 text-xs">{errors.message}</p>}
                             </div>
                         </div>
                         <div data-aos="fade-left" data-aos-delay="700">

@@ -1,28 +1,54 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Register from './Register';
+import ForgotPassword from './ForgotPassword';
 
 const AuthPage = () => {
-  const [showRegister, setShowRegister] = useState(false);
+  const [activeForm, setActiveForm] = useState('login'); // 'login', 'register', 'forgot'
 
   return (
-    <div className=" h-[900px] flex justify-center bg-gray-200 px-4 mb- overflow-hidden relative">
+    <div className="h-[900px] flex justify-center bg-gray-200 px-4 mb- overflow-hidden relative">
       <div className="relative w-full max-w-xl h-auto">
-        {/* Form Wrapper */}
+        {/* Login Form */}
         <div
           className={`absolute w-full transition-all duration-700 ease-in-out ${
-            showRegister ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+            activeForm === 'login'
+              ? 'translate-x-0 opacity-100'
+              : activeForm === 'register'
+              ? 'translate-x-full opacity-0'
+              : '-translate-x-full opacity-0'
           }`}
         >
-          <Login onSwitch={() => setShowRegister(true)} />
+          <Login
+            onSwitchToRegister={() => setActiveForm('forgot')}
+            onSwitchToForgot={() => setActiveForm('register')}
+          />
         </div>
 
+        {/* Register Form */}
         <div
           className={`absolute w-full transition-all duration-700 ease-in-out ${
-            showRegister ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+            activeForm === 'forgot'
+              ? 'translate-x-0 opacity-100'
+              : activeForm === 'login'
+              ? '-translate-x-full opacity-0'
+              : 'translate-x-full opacity-0'
           }`}
         >
-          <Register onSwitch={() => setShowRegister(false)} />
+          <Register onSwitchToLogin={() => setActiveForm('login')} />
+        </div>
+
+        {/* Forgot Password Form */}
+        <div
+          className={`absolute w-full transition-all duration-700 ease-in-out ${
+            activeForm === 'register'
+              ? 'translate-x-0 opacity-100'
+              : activeForm === 'login'
+              ? 'translate-x-full opacity-0'
+              : '-translate-x-full opacity-0'
+          }`}
+        >
+          <ForgotPassword onSwitchToLogin={() => setActiveForm('login')} />
         </div>
       </div>
     </div>

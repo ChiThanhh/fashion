@@ -1,16 +1,40 @@
-import React from 'react';
-
-const Register = ({ onSwitch }) => {
+import React, { useState } from 'react';
+import { register } from '../service/authService';
+import {  toast } from 'react-hot-toast';
+const Register = ({ onSwitchToLogin }) => {
+  const [formData, setFormData] = useState({
+    fullname: '',
+    email: '',
+    password: '',
+  });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = (e) => {
+    try {
+      e.preventDefault();
+      register(formData);
+      toast.success("Đăng ký thành công");
+      navigate("/auth");
+    } catch (error) {
+      const errorMessage = error?.response?.data?.error || "Đăng ký thất bại";
+      toast.error(errorMessage);
+      console.log(error);
+    }
+  };
+  const [error, setError] = useState('');
   return (
     <div className="w-full bg-white rounded-2xl shadow-md p-10 mt-4">
       <h2  className="text-2xl font-bold text-center text-gray-900 mb-8">Đăng ký</h2>
 
-      <form className="space-y-5">
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">Họ và tên</label>
         <input
           type="text"
           placeholder="Họ và tên"
+          name="fullname"
+          onChange={handleChange}
           className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-600 transition-all duration-300"
         />
         </div>
@@ -19,6 +43,8 @@ const Register = ({ onSwitch }) => {
         <input
           type="email"
           placeholder="Email"
+          name="email"
+          onChange={handleChange}
           className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-600 transition-all duration-300"
         />
         </div>
@@ -27,6 +53,8 @@ const Register = ({ onSwitch }) => {
         <input
           type="password"
           placeholder="Mật khẩu"
+          name="password"
+          onChange={handleChange}
           className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-600 transition-all duration-300"
         />
         </div>
@@ -35,6 +63,8 @@ const Register = ({ onSwitch }) => {
         <input
           type="password"
           placeholder="Nhập lại mật khẩu"
+          name="confirmPassword"
+          onChange={handleChange}
           className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-600 transition-all duration-300"
         />
         </div>
@@ -47,7 +77,7 @@ const Register = ({ onSwitch }) => {
       </form>
 
       <p className="text-center text-sm text-gray-600 mt-6">
-        Đã có tài khoản? <span onClick={onSwitch} className="text-gray-800 hover:underline cursor-pointer">Đăng nhập</span>
+        Đã có tài khoản? <span onClick={onSwitchToLogin} className="text-gray-800 hover:underline cursor-pointer">Đăng nhập</span>
       </p>
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">

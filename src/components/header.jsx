@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { SlHeart, SlBag, SlMagnifier, SlUser } from 'react-icons/sl';
-import { FaBars, FaTimes } from 'react-icons/fa'; 
+import { SlHeart, SlBag, SlMagnifier, SlUser ,SlLogout } from 'react-icons/sl';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import DialogSearch from '../pages/DialogSearch';
 import { useNavigate } from 'react-router-dom';
+import { getMenu } from '../service/menuService';
 
 const Header = () => {
   const wishlistCount = 2;
   const cartCount = 5;
-  const [isMenuOpen, setIsMenuOpen] = useState(false); 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
+  const user = JSON.parse(localStorage.getItem('user'));
   useEffect(() => {
     AOS.init({
       duration: 1200,
       once: true,
     });
   }, []);
-  const menuItems = [
-    { name: 'New in', link: '/' },
-    { name: 'Sản phẩm', link: '/product' },
-    { name: 'Lookbook', link: '/' },
-    { name: 'Blog', link: '/blog' },
-    { name: 'Liên hệ', link: '/contact' },
-    { name: 'Cửa hàng', link: '/' },
-  ];
+  const [menuItems, setMenuItems] = useState([]);
+  useEffect(() => {
+    getMenu().then((response) => {
+      setMenuItems(response.data.data);
+    });
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -57,22 +57,24 @@ const Header = () => {
           className={`${isMenuOpen ? 'flex' : 'hidden'
             } md:flex flex-col md:flex-row absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none p-4 md:p-0 gap-4 md:gap-6 text-gray-700 font-medium text-sm z-10 `}
         >
-         <ul className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
-      {menuItems.map((item, index) => (
-        <li
-          key={item.name}
-          data-aos="fade-left"
-          data-aos-delay={100 * index}
-          className="group relative cursor-pointer transition-colors uppercase hover:text-black"
-          onClick={() => navigate(item.link)}
-        >
-          <span className="w-full block">
-            {item.name}
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full"></span>
-          </span>
-        </li>
-      ))}
-    </ul>
+          <ul className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
+            {menuItems
+             .sort((a, b) => Number(a.sort_order) - Number(b.sort_order))
+            .map((item, index) => (
+              <li
+                key={item.name}
+                data-aos="fade-left"
+                data-aos-delay={100 * index}
+                className="group relative cursor-pointer transition-colors uppercase hover:text-black"
+                onClick={() => navigate(item.path)}
+              >
+                <span className="w-full block">
+                  {item.name}
+                  <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full"></span>
+                </span>
+              </li>
+            ))}
+          </ul>
 
         </nav>
 
@@ -101,13 +103,15 @@ const Header = () => {
               </span>
             )}
           </div>
-          <div
-            data-aos="fade-up"
-            data-aos-delay="200"
-            className="hover:text-black cursor-pointer transition-colors"
-          >
-            <SlUser onClick={() => navigate('/auth')} />
-          </div>
+          {!user && (
+            <div
+              data-aos="fade-up"
+              data-aos-delay="200"
+              className="hover:text-black cursor-pointer transition-colors"
+            >
+              <SlUser onClick={() => navigate('/auth')} />
+            </div>
+          )}
           <div
             data-aos="fade-up"
             data-aos-delay="300"
@@ -115,6 +119,18 @@ const Header = () => {
           >
             <SlMagnifier onClick={() => setOpenSearch(true)} />
           </div>
+          {user && (
+            <div
+              data-aos="fade-up"
+              data-aos-delay="400"
+              className="hover:text-black cursor-pointer transition-colors"
+            > 
+              <SlLogout onClick={() => {
+                localStorage.removeItem('user');
+                navigate('/');
+              }} />
+            </div>
+          )}
         </div>
       </header>
       <DialogSearch isOpen={openSearch} onClose={() => setOpenSearch(false)} />
